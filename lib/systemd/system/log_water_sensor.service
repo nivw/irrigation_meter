@@ -1,0 +1,14 @@
+[Unit]
+Description=log_water_sensor service
+Requires=carbon-cache.service
+After=carbon-cache.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/log_water_sensor
+			   
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

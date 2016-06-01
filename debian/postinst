@@ -1,0 +1,41 @@
+#!/bin/sh
+set -x
+systemctl daemon-reload
+
+#Most instlation is handled now in the graphite deb file
+####################################
+# INITIAL DATABASE CREATION
+####################################
+
+echo "Configure graphite"
+sed -i "s/^#SECRET_KEY.*/SECRET_KEY = 'tnIUq9znJC'/" /etc/graphite/local_settings.py
+sed -i "s%^#TIME_ZONE .*%TIME_ZONE = 'Asia/Jerusalem'%" /etc/graphite/local_settings.py
+sed -i 's/\(.USER.: .\)\(.,\)/\1root\2/' /etc/graphite/local_settings.py
+sed -i 's/\(.PASSWORD.: .\)\(.,\)/\1safer_password\2/' /etc/graphite/local_settings.py
+
+echo 'Generate sqlite db file'
+/usr/bin/graphite-manage loaddata /root/initial_data.json
+/usr/bin/graphite-manage syncdb
+[ ! -f "/var/lib/graphite/graphite.db" ] && echo "Missing sqlite db file" && exit 1
+echo "fix file permitions"
+chown _graphite /var/lib/graphite/graphite.db
+
+echo "Verify wsgi file exist"
+cd /usr/share/graphite-web
+[ ! -f "graphite_web.py" ] && cp graphite.wsgi graphite_web.py
+systemctl is-active graphite && systemctl stop graphite
+
+echo "Config graphite-carbon"
+sed -i "s/^\(CARBON_CACHE_ENABLED=\).*/\1true/" /etc/default/graphite-carbon
+#sed -i "s/^ENABLE_LOGROTATION .*/ENABLE_LOGROTATION = True/" /etc/default/graphite-carbon
+
+sed -i "s/^\(CACHE_WRITE_STRATEGY = \).*/\1naive/" /etc/carbon/carbon.conf
+[ -f "/etc/carbon/storage-schemas.conf" -a ! "/etc/carbon/storage-schemas.conf.original"] && cp /etc/carbon/storage-schemas.conf /etc/carbon/storage-schemas.conf.original
+cp /root/storage-schemas.conf /etc/carbon/
+cp /root/storage-aggregation.conf /etc/carbon/
+echo "Move graphite to tmpfs"
+systemctl start use_tmpsfs_for_carbon.service
+systemctl enable use_tmpsfs_for_carbon.service save_tmpfs_carbon.timer
+#systemctl restart carbon-cache
+systemctl restart graphite
+exit 0

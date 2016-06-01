@@ -1,0 +1,17 @@
+Source: irrigation-meter
+Section: misc
+Priority: optional
+Maintainer: Niv Gal Waizer <nivw2008@fastmail.fm>
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 8), dh-python, dh-systemd
+X-Python-Version: 2.7
+
+Package: irrigation-meter
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends},
+  ${python:Depends}, python-virtualenv (>=1.11), python-pip,
+  graphite-web, graphite-carbon, gunicorn, python-whisper,
+  python-cairo-dev, python-django, build-essential, python-setuptools,
+  python-logbook
+Description: Graph water flow though irrigation sensor
+ Generate graphs using graphite

@@ -1,0 +1,17 @@
+[Unit]
+Description=Graphite gunicorn service
+After=network.target
+
+[Service]
+PIDFile=/run/gunicorn/graphite.pid
+Type=simple
+WorkingDirectory=/usr/share/graphite-web
+ExecStart=/usr/bin/gunicorn --pid /run/gunicorn/graphite.pid -w 1 --worker-connections 1 -t 120 -u _graphite -g _graphite -b 0.0.0.0:8888 --log-file=/var/log/gunicorn_graphite.log graphite_web:application
+			   
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

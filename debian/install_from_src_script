@@ -1,0 +1,44 @@
+#!/bin/sh
+VERSION='0.9.14'
+#https://www.digitalocean.com/community/tutorials/installing-and-configuring-graphite-and-statsd-on-an-ubuntu-12-04-vps said to install this:
+#sudo easy_install django-tagging zope.interface twisted txamqp
+#in case python-twisted-14 does not work then use this sudo pip install 'Twisted<12.0'
+#sudo easy_install txamqp
+#0.9.12 exist but 14 is the newest
+wget -qO- https://github.com/graphite-project/graphite-web/archive/0.9.14.tar.gz | tar zxv
+wget -qO- https://github.com/graphite-project/carbon/archive/0.9.14.tar.gz |tar zxv
+wget -qO- https://github.com/graphite-project/whisper/archive/0.9.14.tar.gz |tar zxv
+
+for p in carbon whisper graphite-web; do
+    pushd ${p}-${VERSION}/
+    [ "$p" = "graphite-web;" ] && python check-dependencies.py
+    python setup.py install
+    popd
+done
+####################################
+# INITIAL DATABASE CREATION
+####################################
+# using predefined local_settings.py
+cd /opt/graphite/webapp/graphite/
+sudo python manage.py syncdb
+# follow prompts to setup django admin user
+sudo chown -R www-data:www-data /opt/graphite/storage/
+
+sed -i "s/^#SECRET_KEY.*/SECRET_KEY = 'tnIUq9znJC'/" /etc/graphite/local_settings.py
+sed -i "s/^#TIME_ZONE .*/TIME_ZONE = 'Asia/Jerusalem'/" /etc/graphite/local_settings.py
+sed -i "s/^#USE_REMOTE_USER_AUTHENTICATION.*/USE_REMOTE_USER_AUTHENTICATION = True/" /etc/graphite/local_settings.py
+
+echo 'Not sure if I should sync'
+#graphite-manage syncdb
+
+sed -i "s/^CARBON_CACHE_ENABLED.*/CARBON_CACHE_ENABLED=true/" /etc/default/graphite-carbon
+sed -i "s/^ENABLE_LOGROTATION .*/ENABLE_LOGROTATION = True/" /etc/default/graphite-carbon
+
+
+#fix this /etc/carbon/storage-schemas.conf
+
+cp /usr/share/doc/graphite-carbon/examples/storage-aggregation.conf.example /etc/carbon/storage-aggregation.conf
+systemctl start carbon-cache
+
+#echo 'Setup apache'
+#a2dissite 000-default

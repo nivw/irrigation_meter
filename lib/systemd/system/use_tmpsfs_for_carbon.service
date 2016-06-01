@@ -1,0 +1,10 @@
+[Unit]
+Description=use tmpfs for carbon
+Before=carbon-cache.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/use_tmpsfs_for_carbon.sh
+
+[Install]
+WantedBy=multi-user.target
