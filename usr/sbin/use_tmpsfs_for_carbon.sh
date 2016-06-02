@@ -21,4 +21,4 @@ fi
 [ -d "$GRAPHITE_DIR" ] || ln -s ${GRAPHITE_TMP_DIR} ${GRAPHITE_DIR}
 echo 0 > /proc/sys/vm/swappiness
 rsync --archive  ${GRAPHITE_STOR_DIR}/ ${GRAPHITE_TMP_DIR} || exit 1
-systemctl start carbon-cache.service
+#systemctl start carbon-cache.service
