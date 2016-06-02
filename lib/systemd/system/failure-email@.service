@@ -1,0 +1,6 @@
+[Unit]
+Description=OnFailure for %i
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/systemd_onfailure_email.sh %i

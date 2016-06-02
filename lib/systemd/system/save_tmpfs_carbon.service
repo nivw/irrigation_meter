@@ -1,5 +1,8 @@
 [Unit]
 Description=Save carbon tmpfs to flash service
+Requires=use_tmpsfs_for_carbon.service
+After=use_tmpsfs_for_carbon.service
+OnFailure=failure-email@%i.service
 
 [Service]
 Type=oneshot

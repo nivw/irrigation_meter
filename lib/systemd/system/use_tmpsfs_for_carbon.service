@@ -4,6 +4,7 @@ Before=carbon-cache.service
 
 [Service]
 Type=oneshot
+RemainAfterExit=yes
 ExecStart=/usr/sbin/use_tmpsfs_for_carbon.sh
 
 [Install]
