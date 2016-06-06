@@ -3,8 +3,8 @@
 Connect your IoT beaglebone black to a cheap flow meter and get graphes for current flow rate and accumalated water flow.<br/>
 
 Result would look like this:</br>
-1. [bounces](https://github.com/nivw/irrigation_meter/blob/master/demo_graphes/water.flow.bounces.open.faucet.png) is the current flow rate, and as you can see, when opening a faucet, the air is pushed out of the pipe causing bouncy flow rate.</br>
-2. [flow counter](https://github.com/nivw/irrigation_meter/blob/master/demo_graphes/water.flow.count.png) , is the accumalated bounces throgh the sensor.</br>
+1. [bounces](https://github.com/nivw/irrigation_meter/blob/master/demo_graphs/water.flow.bounces.open.faucet.png) is the current flow rate, and as you can see, when opening a faucet, the air is pushed out of the pipe causing bouncy flow rate.</br>
+2. [flow counter](https://github.com/nivw/irrigation_meter/blob/master/demo_graphs/water.flow.count.png) , is the accumalated bounces throgh the sensor.</br>
 
 ## Hardware:
 1. [Beaglebone black](https://beagleboard.org/black)</br>

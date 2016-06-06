@@ -417,8 +417,8 @@
       "last_login": "2016-05-20T14:28:13.356",
       "groups": [],
       "user_permissions": [],
-      "password": "5c5b278e7184078f54a003ae6f40039de0eca251e615b780d95bc468e9e8f0bc",
-      "email": "you_should_read_my_notes@trash.com",
+      "password": "pbkdf2_sha256$10000$OpqrQL0Iv3M8$e1yWQcDPjIXhUaueRyEC+c8IIibrm1g2q5o6qnTITl0=",
+      "email": "nivw2008@fastmail.fm",
       "date_joined": "2016-05-20T14:28:13.356"
     }
   }
