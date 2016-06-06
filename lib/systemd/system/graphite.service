@@ -1,13 +1,14 @@
 [Unit]
 Description=Graphite gunicorn service
+Before=carbon-cache.service
 After=network.target
 
 [Service]
 PIDFile=/run/gunicorn/graphite.pid
 Type=simple
 WorkingDirectory=/usr/share/graphite-web
-ExecStart=/usr/bin/gunicorn --pid /run/gunicorn/graphite.pid -w 1 --worker-connections 1 -t 120 -u _graphite -g _graphite -b 0.0.0.0:8888 --log-file=/var/log/gunicorn_graphite.log graphite_web:application
-			   
+ExecStart=/usr/bin/gunicorn --pid /run/gunicorn/graphite.pid -w 1 --worker-connections 1 --access-logfile - --log-file - -t 120 -u _graphite -g _graphite -b 0.0.0.0:8888 graphite_web:application
+
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
 Restart=always

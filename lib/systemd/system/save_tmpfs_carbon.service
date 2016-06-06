@@ -7,3 +7,6 @@ OnFailure=failure-email@%i.service
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/rsync --archive /var/lib/graphite.ephemeral/ /var/lib/graphite.permanent
+
+[Install]
+WantedBy=multi-user.target

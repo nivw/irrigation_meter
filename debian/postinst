@@ -34,8 +34,10 @@ sed -i "s/^\(CACHE_WRITE_STRATEGY = \).*/\1naive/" /etc/carbon/carbon.conf
 cp /root/storage-schemas.conf /etc/carbon/
 cp /root/storage-aggregation.conf /etc/carbon/
 echo "Move graphite to tmpfs"
-systemctl start use_tmpsfs_for_carbon.service
-systemctl enable use_tmpsfs_for_carbon.service save_tmpfs_carbon.timer
+for s in use_tmpsfs_for_carbon.service save_tmpfs_carbon.service save_tmpfs_carbon.timer log_water_sensor.service ; do
+  systemctl start ${s}
+done
+systemctl enable use_tmpsfs_for_carbon.service save_tmpfs_carbon.timer log_water_sensor.service
 #systemctl restart carbon-cache
 systemctl restart graphite
 exit 0

@@ -1,6 +1,7 @@
 [Unit]
 Description=use tmpfs for carbon
 Before=carbon-cache.service
+Before=graphite.service
 
 [Service]
 Type=oneshot
