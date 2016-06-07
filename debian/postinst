@@ -1,7 +1,10 @@
 #!/bin/sh
 set -x
+set +e
+echo "in case of upgrade stop servces"
 systemctl daemon-reload
-
+systemctl is-active carbon-cache.service && systemctl carbon-cache.service graphite
+systemctl is-active graphite && systemctl stop graphite
 #Most instlation is handled now in the graphite deb file
 ####################################
 # INITIAL DATABASE CREATION
@@ -23,7 +26,7 @@ chown _graphite /var/lib/graphite/graphite.db
 echo "Verify wsgi file exist"
 cd /usr/share/graphite-web
 [ ! -f "graphite_web.py" ] && cp graphite.wsgi graphite_web.py
-systemctl is-active graphite && systemctl stop graphite
+
 
 echo "Config graphite-carbon"
 sed -i "s/^\(CARBON_CACHE_ENABLED=\).*/\1true/" /etc/default/graphite-carbon
@@ -33,11 +36,16 @@ sed -i "s/^\(CACHE_WRITE_STRATEGY = \).*/\1naive/" /etc/carbon/carbon.conf
 [ -f "/etc/carbon/storage-schemas.conf" -a ! "/etc/carbon/storage-schemas.conf.original"] && cp /etc/carbon/storage-schemas.conf /etc/carbon/storage-schemas.conf.original
 cp /root/storage-schemas.conf /etc/carbon/
 cp /root/storage-aggregation.conf /etc/carbon/
+
 echo "Move graphite to tmpfs"
-for s in use_tmpsfs_for_carbon.service save_tmpfs_carbon.service save_tmpfs_carbon.timer log_water_sensor.service ; do
-  systemctl start ${s}
+#changing carbon-cache.service so it will start after db files
+#move to tmpfs
+cp /lib/system/systemd/carbon-cache.service /root/carbon-cache.service.orig
+cp /root/carbon-cache.service /lib/system/systemd/carbon-cache.service
+for s in use_tmpsfs_for_carbon save_tmpfs_carbon carbon-cache log_water_sensor graphite ; do
+    systemctl restart ${s}.service
+    systemctl enable ${s}.service
 done
-systemctl enable use_tmpsfs_for_carbon.service save_tmpfs_carbon.timer log_water_sensor.service
-#systemctl restart carbon-cache
-systemctl restart graphite
+systemctl start save_tmpfs_carbon.timer
+systemctl enable save_tmpfs_carbon.timer
 exit 0

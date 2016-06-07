@@ -1,1 +1,1 @@
-http://niv-irrigation:8888/render/?width=588&height=311&_salt=1463845789.656&target=water.flow.count&from=-60min&until=now&target=integral(water.flow.count)
+http://niv-irrigation:8888/render/?width=588&height=311&target=water.flow.count&from=-60min&until=now&target=integral(water.flow.count)

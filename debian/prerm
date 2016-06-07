@@ -1,0 +1,12 @@
+#!/bin/sh
+set -x
+set +e
+systemctl stop save_tmpfs_carbon.timer
+systemctl disable save_tmpfs_carbon.timer
+
+[ -f "/root/carbon-cache.service.orig" ] &&cp /root/carbon-cache.service.orig /lib/system/systemd/
+cp /root/carbon-cache.service /lib/system/systemd/carbon-cache.service
+for s in use_tmpsfs_for_carbon save_tmpfs_carbon carbon-cache log_water_sensor graphite ; do
+    systemctl stop ${s}.service
+    systemctl disable ${s}.service
+done
