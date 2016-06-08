@@ -1,1 +1,3 @@
-http://niv-irrigation:8888/render/?width=588&height=311&target=water.flow.count&from=-60min&until=now&target=integral(water.flow.count)
+http://localhost:8888/render/?width=588&height=311&target=water.flow.count&from=-60min&until=now&target=integral(water.flow.count)
+#show the sum of all bounces during the last 30 days, show last hour
+http://localhost:8888/render/?target=summarize(water.flow.bounces,%2230day%22,%22sum%22)&from=-1hour&until=now

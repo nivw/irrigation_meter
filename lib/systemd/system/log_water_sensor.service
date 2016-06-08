@@ -6,7 +6,7 @@ After=carbon-cache.service
 [Service]
 Type=simple
 ExecStart=/usr/bin/log_water_sensor
-
+User=debian
 Restart=always
 RestartSec=60
 
